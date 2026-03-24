@@ -269,20 +269,15 @@ public class TutorialsController {
     @GetMapping("/demo-error")
     public ResponseEntity<?> demoError(
             @RequestParam(defaultValue = "tutorial-not-found") String errorType) {
-        try {
-            NewRelic.addCustomParameter("error.type", errorType);
-            NewRelic.addCustomParameter("error.endpoint", "/api/tutorials/demo-error");
-        } catch (NoClassDefFoundError | LinkageError ignored) {
-            // NR agent not installed yet
-        }
-
         log.error("Demo error triggered: errorType={}", errorType);
         RuntimeException e = new RuntimeException(
                 "Demo error [" + errorType + "]: intentional error for observability workshop");
 
         try {
+            NewRelic.addCustomParameter("error.type", errorType);
+            NewRelic.addCustomParameter("error.endpoint", "/api/tutorials/demo-error");
             NewRelic.noticeError(e);
-        } catch (NoClassDefFoundError | LinkageError ignored) {
+        } catch (Exception ignored) {
             // NR agent not installed yet
         }
 
