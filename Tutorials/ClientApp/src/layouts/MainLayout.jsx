@@ -5,6 +5,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import viteLogo from '/vite.svg';
 import nrLogo from '/new_relic_logo_horizontal.png';
+import http from '../http-common';
 
 const MainLayout = ({ children }) => {
   const [visible, setVisible] = useState(false);
@@ -47,12 +48,14 @@ const MainLayout = ({ children }) => {
           ))}
         </div>
         
-        {/* <div className="ml-auto d-flex align-items-center">
-          <Button 
-            icon="pi pi-user" 
-            className="p-button-rounded p-button-text p-button-plain text-white"
+        <div className="ml-auto d-flex align-items-center">
+          <Button
+            icon="pi pi-bolt"
+            label="Trigger Error"
+            className="p-button-rounded p-button-danger p-button-sm"
+            onClick={() => http.get('/tutorials/demo-error').catch(() => {})}
           />
-        </div> */}
+        </div>
       </header>
 
       {/* Mobile Sidebar */}
