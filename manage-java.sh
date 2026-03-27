@@ -4,6 +4,7 @@
 # Usage: 
 #   ./manage-java.sh seed     - Seed the database
 #   ./manage-java.sh build    - Build frontend and backend
+#   ./manage-java.sh build-db - Create the database and seed it
 #   ./manage-java.sh start    - Start the application
 #   ./manage-java.sh reset    - Reset database and re-seed
 
@@ -57,6 +58,16 @@ case "$1" in
         mvn spring-boot:run
         ;;
     
+    "build-db")
+        echo "🛠️ Creating database..."
+        PGPASSWORD=root psql -h localhost -U postgres -c "CREATE DATABASE tutorials_db;" || true
+        
+        echo "🌱 Seeding database..."
+        cd "$JAVA_PROJECT_DIR"
+        mvn spring-boot:run -Dspring-boot.run.arguments="seed"
+        echo "✅ Database created and seeded successfully!"
+        ;;
+    
     "reset")
         echo "🗑️ Resetting database and re-seeding..."
         # In Spring Boot with ddl-auto=update, we don't drop the schema usually, 
@@ -73,7 +84,7 @@ case "$1" in
     *)
         echo "Java Tutorials App Management Script"
         echo ""
-        echo "Usage: $0 {build|seed|start|reset}"
+        echo "Usage: $0 {build|build-db|seed|start|reset}"
         echo ""
         exit 1
         ;;
